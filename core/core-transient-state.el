@@ -203,7 +203,9 @@ used."
                  :before-exit ,exit-sexp)
                 ,doc)
              (spacemacs//transient-state-adjust-bindings
-              ',bindings ',remove-bindings ',add-bindings)))
+              ',(cl-pushnew '("<escape>" nil :exit t)
+                            bindings :key #'car :test #'equal)
+              ',remove-bindings ',add-bindings)))
            (when ,title
              (let ((guide (concat "[" (propertize "KEY" 'face 'hydra-face-blue)
                                   "] exits state  ["
