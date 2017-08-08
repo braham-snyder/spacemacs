@@ -171,7 +171,25 @@
         ("c" macrostep-collapse)
         ("n" macrostep-next-macro)
         ("N" macrostep-prev-macro)
-        ("q" macrostep-collapse-all :exit t))
+        ("q" macrostep-collapse-all :exit t)
+        ("RET"
+         (lambda ()
+           (interactive)
+           ;; Exit the hydra *and* unbind stock `macrostep-keymap' keybindings
+           ;; without exiting the mode entirely (primarily: keep macros
+           ;; expanded). Unbinds, e.g., "q" from `macrostep-collapse-all' and
+           ;; "p" from `macrostep-prev-macro' (which can shadow, at the least,
+           ;; edebug's `top-level' and `edebug-bounce-point' keybindings,
+           ;; respectively). NOTE again: I don't truly want to turn off the mode
+           ;; here (which collapses expansions, makes the buffer writable,
+           ;; etc.), I just don't want the minor mode's keybindings -- hence
+           ;; `setq' to disable its map instead of calling the `macrostep-mode'
+           ;; function (any better approaches? modify its map buffer-locally or
+           ;; something?). Later calling
+           ;; `spacemacs/macrostep-transient-state/body' once more allows
+           ;; collapsing the macro expansion(s); navigating to the next/prev
+           ;; macro; truly exiting the mode altogether; etc.
+           (setq macrostep-mode nil)) :exit t))
       (spacemacs/set-leader-keys-for-major-mode 'emacs-lisp-mode
         "dm" 'spacemacs/macrostep-transient-state/body))))
 
